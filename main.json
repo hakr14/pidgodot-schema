@@ -1,0 +1,79 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$defs": {
+        "color": {
+            "type": "string",
+            "description": "A hex color code",
+            "pattern": "^#?([a-fA-F0-9]{1,3}|[a-fA-F0-9]{6})$"
+        },
+        "fraction": {
+            "type": "object",
+            "properties": {
+                "numerator": {
+                    "type": "integer"
+                },
+                "denominator": {
+                    "type": "integer"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "numerator",
+                "denominator"
+            ]
+        },
+        "number": {
+            "oneOf": [
+                {
+                    "type": "number"
+                },
+                {
+                    "$ref": "#/$defs/fraction"
+                }
+            ]
+        },
+        "typeMap": {
+            "type": "object",
+            "description": "A map of type ids and multipliers",
+            "additionalProperties": {
+                "oneOf": [
+                    {
+                        "$ref": "#/$defs/number"
+                    },
+                    {
+                        "type": "string"
+                    }
+                ]
+            }
+        }
+    },
+    "properties": {
+        "types": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "object",
+                "description": "A Type that a monster (or move) can be",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The displayed name of the type"
+                    },
+                    "color": {
+                        "$ref": "#/$defs/color"
+                    },
+                    "mulsAgainst": {
+                        "$ref": "#/$defs/typeMap"
+                    },
+                    "mulsFrom": {
+                        "$ref": "#/$defs/typeMap"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "color"
+                ]
+            }
+        }
+    }
+}
