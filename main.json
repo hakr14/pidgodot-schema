@@ -3,42 +3,18 @@
     "$defs": {
         "color": {
             "type": "string",
-            "description": "A hex color code",
-            "pattern": "^#?([a-fA-F0-9]{1,3}|[a-fA-F0-9]{6})$"
+            "pattern": "^#?([a-fA-F0-9]{3}|[a-fA-F0-9]{6})$"
         },
-        "fraction": {
-            "type": "object",
-            "properties": {
-                "numerator": {
-                    "type": "integer"
-                },
-                "denominator": {
-                    "type": "integer"
-                }
-            },
-            "additionalProperties": false,
-            "required": [
-                "numerator",
-                "denominator"
-            ]
-        },
-        "number": {
-            "oneOf": [
-                {
-                    "type": "number"
-                },
-                {
-                    "$ref": "#/$defs/fraction"
-                }
-            ]
+        "function": {
+            "type": "string",
+            "pattern": "^((?:\\((?1)\\)|(?:(?:(?2)(?:\\((?1)(?:,\\s*(?1))*\\))|(?:(\\b[A-Za-z_]\\w*\\b)|\\b\\d+\\b))))(?:\\s*[+\\-*\\/%]\\s*(?1))?)$"
         },
         "typeMap": {
             "type": "object",
-            "description": "A map of type ids and multipliers",
             "additionalProperties": {
                 "oneOf": [
                     {
-                        "$ref": "#/$defs/number"
+                        "type": "number"
                     },
                     {
                         "type": "string"
@@ -48,15 +24,45 @@
         }
     },
     "properties": {
+        "constants": {
+            "type": "object",
+            "additionalProperties": {
+                "oneOf": [
+                    {
+                        "type": "number"
+                    },
+                    {
+                        "$ref": "#/$defs/function"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "variables": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "description": "constants, special values"
+                                }
+                            },
+                            "formula": {
+                                "$ref": "#/$defs/function"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "formula"
+                        ]
+                    }
+                ]
+            }
+        },
         "types": {
             "type": "object",
             "additionalProperties": {
                 "type": "object",
-                "description": "A Type that a monster (or move) can be",
                 "properties": {
                     "name": {
-                        "type": "string",
-                        "description": "The displayed name of the type"
+                        "type": "string"
                     },
                     "color": {
                         "$ref": "#/$defs/color"
@@ -75,5 +81,6 @@
                 ]
             }
         }
-    }
+    },
+    "additionalProperties": false
 }
