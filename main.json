@@ -3,7 +3,7 @@
     "$defs": {
         "color": {
             "type": "string",
-            "pattern": "^#?([a-fA-F0-9]{3}|[a-fA-F0-9]{6})$"
+            "pattern": "^#?(?:[a-fA-F\\d]{3}){1,2}$"
         },
         "function": {
             "type": "string",
@@ -21,10 +21,8 @@
                     }
                 ]
             }
-        }
-    },
-    "properties": {
-        "constants": {
+        },
+        "value": {
             "type": "object",
             "additionalProperties": {
                 "oneOf": [
@@ -32,16 +30,13 @@
                         "type": "number"
                     },
                     {
-                        "$ref": "#/$defs/function"
-                    },
-                    {
                         "type": "object",
                         "properties": {
                             "variables": {
-                                "type": "array",
-                                "items": {
+                                "type": "object",
+                                "additionalProperties": {
                                     "type": "string",
-                                    "description": "constants, special values"
+                                    "pattern": "^([A-Za-z]\\w*)(?:\\.(?1))*$"
                                 }
                             },
                             "formula": {
@@ -55,6 +50,18 @@
                     }
                 ]
             }
+        }
+    },
+    "properties": {
+        "constants": {
+            "oneOf": [
+                {
+                    "type": "number"
+                },
+                {
+                    "type": "object"
+                }
+            ]
         },
         "types": {
             "type": "object",
@@ -78,6 +85,79 @@
                 "required": [
                     "name",
                     "color"
+                ]
+            }
+        },
+        "stats": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "short": {
+                        "type": "string"
+                    },
+                    "color": {
+                        "$ref": "#/$defs/color"
+                    },
+                    "flags": {
+                        "type": "array",
+                        "items": {
+                            "enum": [
+                                "health",
+                                "depletable",
+                                "battle"
+                            ]
+                        },
+                        "uniqueItems": true
+                    },
+                    "value": {
+                        "oneOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/$defs/value"
+                            }
+                        ]
+                    },
+                    "stages": {
+                        "oneOf": [
+                            {
+                               "type": "string"
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "op": {
+                                        "type": "string",
+                                        "pattern": "^[+\\-*\\/%]$"
+                                    },
+                                    "values": {
+                                        "type": "object",
+                                        "patternProperties": {
+                                            "^[+-]?\\d+$": {
+                                                "type": "number"
+                                            }
+                                        },
+                                        "additionalProperties": false
+                                    }
+                                },
+                                "additionalProperties": false,
+                                "required": [
+                                    "op",
+                                    "values"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "value"
                 ]
             }
         }
