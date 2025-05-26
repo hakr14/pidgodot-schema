@@ -23,6 +23,34 @@
             }
         },
         "value": {
+            "oneOf": [
+                {
+                    "type": "number"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "variables": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string",
+                                "pattern": "^([A-Za-z]\\w*)(?:\\.(?1))*$"
+                            }
+                        },
+                        "formula": {
+                            "$ref": "#/$defs/function"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "formula"
+                    ]
+                }
+            ]
+    }
+    },
+    "properties": {
+        "constants": {
             "type": "object",
             "additionalProperties": {
                 "oneOf": [
@@ -30,38 +58,10 @@
                         "type": "number"
                     },
                     {
-                        "type": "object",
-                        "properties": {
-                            "variables": {
-                                "type": "object",
-                                "additionalProperties": {
-                                    "type": "string",
-                                    "pattern": "^([A-Za-z]\\w*)(?:\\.(?1))*$"
-                                }
-                            },
-                            "formula": {
-                                "$ref": "#/$defs/function"
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "formula"
-                        ]
+                        "type": "object"
                     }
                 ]
             }
-        }
-    },
-    "properties": {
-        "constants": {
-            "oneOf": [
-                {
-                    "type": "number"
-                },
-                {
-                    "type": "object"
-                }
-            ]
         },
         "types": {
             "type": "object",
