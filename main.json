@@ -191,6 +191,107 @@
                     "default"
                 ]
             }
+        },
+        "levelings": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "min": {
+                        "type": "integer"
+                    },
+                    "max": {
+                        "type": "integer"
+                    },
+                    "formulae": {
+                        "type": "object",
+                        "patternProperties": {
+                            "^\\d+$": {
+                                "$ref": "#/$defs/function"
+                            }
+                        }
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "min",
+                    "max",
+                    "formulae"
+                ]
+            }
+        },
+        "genders": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "color": {
+                        "$ref": "#/$defs/color"
+                    },
+                    "symbol": {
+                        "type": "string"
+                    },
+                    "mates": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "uniqueItems": true
+                    },
+                    "bypassGroups": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "checkOrder": {
+                        "type": "integer",
+                        "default": 0
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name"
+                ]
+            }
+        },
+        "breedgroups": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "color": {
+                        "$ref": "#/$defs/color"
+                    },
+                    "mates": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "uniqueItems": true
+                    },
+                    "bypassGenders": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "checkOrder": {
+                        "type": "integer",
+                        "default": 0
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name"
+                ]
+            }
         }
     },
     "additionalProperties": false
