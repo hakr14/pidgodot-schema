@@ -142,6 +142,13 @@
                     },
                     "mulsFrom": {
                         "$ref": "#/$defs/typeMap"
+                    },
+                    "status_immune": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "uniqueItems": true
                     }
                 },
                 "additionalProperties": false,
@@ -260,19 +267,19 @@
                         "type": "integer"
                     },
                     "formulae": {
-                        "oneOf": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "object",
-                                "patternProperties": {
+                        "type": "object",
+                        "patternProperties": {
+                            "oneOf": [
+                                {
+                                    "type": "integer"
+                                },
+                                {
                                     "^\\d+$": {
                                         "$ref": "#/$defs/function"
-                                    }
+                                   }
                                 }
-                            }
-                        ]
+                            ]
+                        }
                     }
                 },
                 "additionalProperties": false,
@@ -379,20 +386,27 @@
                     "event_scripts": {
                         "$ref": "#/$defs/event_scripts"
                     },
-                    "icon_slot": {
-                        "type": "object",
-                        "properties": {
-                            "icon": {
+                    "icon": {
+                        "oneOf": [
+                            {
                                 "$ref": "#/$defs/file"
                             },
-                            "slot": {
-                                "type": "integer"
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "icon": {
+                                        "$ref": "#/$defs/file"
+                                    },
+                                    "slot": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "additionalProperties": false,
+                                "required": [
+                                    "icon",
+                                    "slot"
+                                ]
                             }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "icon",
-                            "slot"
                         ]
                     }
                 },
