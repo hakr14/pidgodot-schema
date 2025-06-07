@@ -7,7 +7,15 @@
         },
         "function": {
             "type": "string",
-            "pattern": "^((?:\\((?1)\\)|(?:(?:(?2)(?:\\((?1)(?:,\\s*(?1))*\\))|(?:(\\b[A-Za-z_]\\w*\\b)|\\b\\d+\\b))))(?:\\s*[+\\-*\\/%]\\s*(?1))?)$"
+            "pattern": "^((?:\\((?1)\\)|(?:(?:(?2)(?:\\((?1)(?:,\\s*(?1))*\\))|(?:(\\b[A-Za-z_]\\w*\\b)|\\b\\d+(?:\\.\\d+)?\\b))))(?:\\s*[+\\-*\\/%]\\s*(?1))?)$"
+        },
+        "script": {
+            "type": "string",
+            "pattern": "^((?:\\((?1)\\)|(\\\\*)\".+\"\\2|(?:(?:(?3)(?:\\((?1)(?:,\\s*(?1))*\\))|(?:(\\b[A-Za-z_]\\w*\\b)|\\b\\d+(?:\\.\\d+)?\\b))))(?:\\s*[+\\-*\\\/%]\\s*(?1))?)(?:;\\s*(?1))*;?$"
+        },
+        "file": {
+            "type": "string",
+            "pattern": "^(?:[A-Z]:[\\\/\\\\])?(?:[\\w-]+[\\\/\\\\])*[\\w-]+\\.\\w+$"
         },
         "typeMap": {
             "type": "object",
@@ -54,7 +62,52 @@
                     ]
                 }
             ]
-    }
+        },
+        "event": {
+            "enum": [
+                "ability_triggered",
+                "contact_made",
+                "damage_taken",
+                "field_effect_change",
+                "item_changed",
+                "item_triggered",
+                "level_up",
+                "monster_down",
+                "monster_enter",
+                "monster_exit",
+                "move_start",
+                "move_hit",
+                "move_miss",
+                "stage_altered",
+                "status_change",
+                "turn_end",
+                "turn_start",
+                "weather_change"
+            ]
+        },
+        "event_scripts": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "event": {
+                        "$ref": "#/$defs/event"
+                    },
+                    "priority": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "script": {
+                        "$ref": "#/$defs/script"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "event",
+                    "script"
+                ]
+            }
+        }
     },
     "properties": {
         "constants": {
@@ -207,12 +260,19 @@
                         "type": "integer"
                     },
                     "formulae": {
-                        "type": "object",
-                        "patternProperties": {
-                            "^\\d+$": {
-                                "$ref": "#/$defs/function"
+                        "oneOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "object",
+                                "patternProperties": {
+                                    "^\\d+$": {
+                                        "$ref": "#/$defs/function"
+                                    }
+                                }
                             }
-                        }
+                        ]
                     }
                 },
                 "additionalProperties": false,
@@ -290,6 +350,56 @@
                 "additionalProperties": false,
                 "required": [
                     "name"
+                ]
+            }
+        },
+        "statuses": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "flags": {
+                        "type": "array",
+                        "items": {
+                            "enum": [
+                                "persistent"
+                            ]
+                        },
+                        "uniqueItems": true
+                    },
+                    "statmods": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "number"
+                        }
+                    },
+                    "event_scripts": {
+                        "$ref": "#/$defs/event_scripts"
+                    },
+                    "icon_slot": {
+                        "type": "object",
+                        "properties": {
+                            "icon": {
+                                "$ref": "#/$defs/file"
+                            },
+                            "slot": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "icon",
+                            "slot"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "event_scripts"
                 ]
             }
         }
